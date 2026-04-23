@@ -20,8 +20,16 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
+# Cấu hình OpenAI (tuỳ chọn nếu muốn chạy mode=openai)
+# File .env
+# OPENAI_API_KEY=sk-...
+# OPENAI_BASE_URL=... (tuỳ chọn)
+
 # Chạy benchmark (với mock data)
 python run_benchmark.py --dataset data/hotpot_mini.json --out-dir outputs/sample_run
+
+# Chạy benchmark với OpenAI thật
+python run_benchmark.py --dataset data/hotpot_mini.json --out-dir outputs/openai_run --mode openai --openai-model gpt-3.5-turbo
 
 # Chạy chấm điểm tự động
 python autograde.py --report-path outputs/sample_run/report.json
@@ -34,7 +42,8 @@ python autograde.py --report-path outputs/sample_run/report.json
 ## Thành phần mã nguồn
 - `src/reflexion_lab/schemas.py`: Định nghĩa các kiểu dữ liệu trace, record.
 - `src/reflexion_lab/prompts.py`: Nơi chứa các template prompt cho Actor, Evaluator và Reflector.
-- `src/reflexion_lab/mock_runtime.py`: (Cần thay thế) Logic giả lập phản hồi LLM.
+- `src/reflexion_lab/mock_runtime.py`: Logic giả lập phản hồi LLM để chạy nhanh không tốn API.
+- `src/reflexion_lab/llm_runtime.py`: Runtime gọi OpenAI API thật, có đo token usage và latency.
 - `src/reflexion_lab/agents.py`: Cấu trúc chính của ReAct và Reflexion Agent.
 - `src/reflexion_lab/reporting.py`: Logic xuất báo cáo benchmark.
 - `run_benchmark.py`: Script chính để chạy đánh giá.
